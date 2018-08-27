@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+#   Author: Nikita Ermakov <arei@basealt.ru> <coffe92@gmail.com>
+#   Version: v0.1
+#   Date: 24 Aug 2018
+#   License: GNU GPL v3
+#   Description: Makefile for the patch_bbl from a riscv-bbl package
+#
+
+CC=@CC@
+LD=@CC@
+
+CFLAGS=@CFLAGS@
+SRC=$(shell find src/ -name "*.c")
+PROG = patch_bbl
+
+all: $(PROG)
+
+$(PROG): $(SRC:.c=.o)
+	$(LD) $^ -o $@
+
+%.o: %.c
+	$(CC) -c $< -o $@
+
+.PHONY: clean
+clean:
+	rm -vf $(PROG) src/*.o
+
+.PHONY: distclean
+distclean:
+	rm -vrf $(PROG) src/*.o Makefile autom4te.cache config.log config.status
