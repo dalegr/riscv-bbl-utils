@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+#   Author: Nikita Ermakov <arei@basealt.ru> <coffe92@gmail.com>
+#   Version: v0.1
+#   Date: 24 Aug 2018
+#   License: GNU GPL v3
+#   Description: This script is a part of riscv-bbl package.
+#                It:
+#                 1) extracts raw binary from the vmlinux
+#                 2) adds it to the end of a bbl
+#                 3) invocates patch_bbl
+#
+
+# variables
+IN_VMLINUX=""
+OUT_BBL_BIN=""
+BBL_BIN="bbl.wopayload.bin"
+
+# check color support
+if test -t 1 ; then
+  ncolors=$(tput colors)
+  if test -n "$ncolors" && test $ncolors -ge 8; then
+    bold="$(tput bold)"
+    underline="$(tput smul)"
+    standout="$(tput smso)"
+    normal="$(tput sgr0)"
+    black="$(tput setaf 0)"
+    red="$(tput setaf 1)"
+    green="$(tput setaf 2)"
+    yellow="$(tput setaf 3)"
+    blue="$(tput setaf 4)"
+    magenta="$(tput setaf 5)"
+    cyan="$(tput setaf 6)"
+    white="$(tput setaf 7)"
+  fi
+fi
+
+if [ $# -gt 1 ]; then
+  IN_VMLINUX=$1
+  OUT_BBL_BIN=$2
+  if [ $# -gt 2 ]; then
+    BBL_BIN=$3
+  fi
+else
+  echo -e "Usage: kerbbl IN_VMLINUX OUT_BBL_BIN [IN_BBL_BIN]\nwhere:\
+    \n\tIN_VMLINUX -- path to the Linux kernel image\
+    \n\tOUT_BBL_BIN -- path to the output BBL binary\
+    \n\tIN_BBL_BIN -- input name of BBL without payload\n"
+  exit -1
+fi
+
+echo ${cyan}Using vmlinux kernel:${normal} $IN_VMLINUX
+echo ${cyan}Using output bbl.bin:${normal} $OUT_BBL_BIN
+
+# extart raw binary from vmlinux
+echo -n "${cyan}Extracting vmlinux... ${normal}"
+if objcopy -S -O binary $IN_VMLINUX ${OUT_BBL_BIN}.tmp 2> /dev/null > /dev/null; then
+  echo "${green}[DONE]${normal}"
+else
+  echo "${red}[FAIL]${normal}"
+  rm -f ${OUT_BBL_BIN}.tmp
+  exit -1
+fi
+
+# concatenate berkeley bootloader and raw vmlinux
+echo -n "${cyan}Writing bbl without payload... ${normal}"
+if cat $BBL_BIN > $OUT_BBL_BIN; then
+  echo "${green}[DONE]${normal}"
+else
+  echo "${red}[FAIL]${normal}"
+  rm -f $OUT_BBL_BIN ${OUT_BBL_BIN}.tmp
+  exit -1
+fi
+
+echo -n "${cyan}Writing vmlinux payload... ${normal}"
+if cat ${OUT_BBL_BIN}.tmp >> $OUT_BBL_BIN; then
+  echo "${green}[DONE]${normal}"
+else
+  echo "${red}[FAIL]${normal}"
+  rm -f $OUT_BBL_BIN ${OUT_BBL_BIN}.tmp
+  exit -1
+fi
+
+mv $OUT_BBL_BIN $OUT_BBL_BIN.tmp
+
+# patch berkeley bootloader
+echo -n  "${cyan}Patching Berkeley bootloader... ${normal}"
+ERROR_CMD=`./patch_bbl -f $OUT_BBL_BIN.tmp -o $OUT_BBL_BIN`
+if test -z "$ERROR_CMD"; then
+  echo "${green}[DONE]${normal}"
+else
+  echo "${red}[FAIL]${normal}"
+  echo "${ERROR_CMD}"
+fi
+
+rm -f $OUT_BBL_BIN.tmp
