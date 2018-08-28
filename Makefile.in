@@ -9,6 +9,7 @@
 
 CC=@CC@
 LD=@CC@
+PREFIX=@prefix@
 
 CFLAGS=@CFLAGS@
 SRC=$(shell find src/ -name "*.c")
@@ -21,6 +22,20 @@ $(PROG): $(SRC:.c=.o)
 
 %.o: %.c
 	$(CC) -c $< -o $@
+
+.PHONY: install
+install: $(PROG)
+	mkdir -p $(PREFIX)/bin
+	mkdir -p $(PREFIX)/sbin
+	cp $< $(PREFIX)/bin
+	cp kerbbl $(PREFIX)/sbin
+	chmod 755 $(PREFIX)/bin/$<
+	chmod 755 $(PREFIX)/sbin/kerbbl
+
+.PHONY: uninstall
+uninstall: $(PROG)
+	rm -f $(PREFIX)/bin/$<
+	rm -f $(PREFIX)/sbin/kerbbl
 
 .PHONY: clean
 clean:

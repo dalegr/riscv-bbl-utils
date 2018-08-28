@@ -44,6 +44,6 @@ if [ test "x$SGDISK" == "x"; ] then
 fi
 
 dnl Configure Makefile from Makefile.in
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
