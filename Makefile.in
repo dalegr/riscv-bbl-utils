@@ -13,7 +13,7 @@ PREFIX=@prefix@
 
 CFLAGS=@CFLAGS@
 SRC=$(shell find src/ -name "*.c")
-PROG = patch_bbl
+PROG=patch_bbl
 
 all: $(PROG)
 
@@ -25,17 +25,17 @@ $(PROG): $(SRC:.c=.o)
 
 .PHONY: install
 install: $(PROG)
-	mkdir -p $(PREFIX)/bin
-	mkdir -p $(PREFIX)/sbin
-	cp $< $(PREFIX)/bin
-	cp kerbbl $(PREFIX)/sbin
-	chmod 755 $(PREFIX)/bin/$<
-	chmod 755 $(PREFIX)/sbin/kerbbl
+	mkdir -p $(DESTDIR)/$(PREFIX)/bin
+	mkdir -p $(DESTDIR)/$(PREFIX)/sbin
+	cp $< $(DESTDIR)/$(PREFIX)/bin
+	cp kerbbl $(DESTDIR)/$(PREFIX)/sbin
+	chmod 755 $(DESTDIR)/$(PREFIX)/bin/$<
+	chmod 755 $(DESTDIR)/$(PREFIX)/sbin/kerbbl
 
 .PHONY: uninstall
 uninstall: $(PROG)
-	rm -f $(PREFIX)/bin/$<
-	rm -f $(PREFIX)/sbin/kerbbl
+	rm -f $(DESTDIR)/$(PREFIX)/bin/$<
+	rm -f $(DESTDIR)/$(PREFIX)/sbin/kerbbl
 
 .PHONY: clean
 clean:
