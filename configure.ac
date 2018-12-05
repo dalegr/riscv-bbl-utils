@@ -3,10 +3,10 @@ dnl Process this file in order to make a configure script
 dnl
 
 dnl Setup autoconf
-AC_INIT([riscv-bbl], [0.1], [arei@basealt.ru])
+AC_INIT([riscv-bbl], [0.2], [arei@altlinux.org])
 dnl AM_INIT_AUTOMAKE
 
-dnl debug option
+dnl Debug option
 AC_ARG_ENABLE(debug,
               AS_HELP_STRING([--enable-debug],[enable debugging, defult: no]),
               [case "${enableval}" in
@@ -14,6 +14,7 @@ AC_ARG_ENABLE(debug,
                no)  debug = false ;;
                *)   AC_MSG_ERROR([bad value ${enablevalue} for --enable-debug]) ;;
              esac], [debug=false])
+
 dnl Check dependences
 echo "Cheking dependences"
 AC_LANG(C)
@@ -21,7 +22,7 @@ AC_CHECK_TOOL(OBJCOPY, objcopy)
 AC_CHECK_TOOL(GDISK, gdisk)
 AC_CHECK_TOOL(SGDISK, sgdisk)
 
-dnl disable all CFLAGS if it was not declarated
+dnl Disable all CFLAGS if it was not declarated
 if [test -z $CFLAGS; ] then
   if test x"${debug}" == x"true"; then
     CFLAGS="-g -O0"
@@ -43,7 +44,11 @@ if [ test "x$SGDISK" == "x"; ] then
   AC_MSG_ERROR([sgdisk from gdisk package required])
 fi
 
+dnl Get source code path
+dnl AC_DEFINE_UNQUOTED([SRC_PATH], ["$srcdir"], [source path])
+
 dnl Configure Makefile from Makefile.in
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([$srcdir/Makefile])
 
 AC_OUTPUT
+mv $srcdir/Makefile .

@@ -12,35 +12,36 @@ LD=@CC@
 PREFIX=@prefix@
 
 CFLAGS=@CFLAGS@
-SRC=$(shell find src/ -name "*.c")
-PROG=patch_bbl
+SRC_PATH=@abs_top_srcdir@
+SRC=$(shell find ${SRC_PATH}/src/ -name "*.c")
+PROG=bbl-patch
+HELPERSH=mkbbl
+_ := $() $()
+comma := ,
 
 all: $(PROG)
 
 $(PROG): $(SRC:.c=.o)
 	$(LD) $^ -o $@
+	cp $(SRC_PATH)/$(HELPERSH) .
 
 %.o: %.c
 	$(CC) -c $< -o $@
 
 .PHONY: install
-install: $(PROG)
+install: $(PROG) $(HELPERSH)
 	mkdir -p $(DESTDIR)/$(PREFIX)/bin
-	mkdir -p $(DESTDIR)/$(PREFIX)/sbin
-	cp $< $(DESTDIR)/$(PREFIX)/bin
-	cp kerbbl $(DESTDIR)/$(PREFIX)/sbin
-	chmod 755 $(DESTDIR)/$(PREFIX)/bin/$<
-	chmod 755 $(DESTDIR)/$(PREFIX)/sbin/kerbbl
+	cp {$(subst $(_),$(comma),$^)} $(DESTDIR)/$(PREFIX)/bin/
+	chmod 755 $(DESTDIR)/$(PREFIX)/bin/{$(subst $(_),$(comma),$^)}
 
 .PHONY: uninstall
-uninstall: $(PROG)
-	rm -f $(DESTDIR)/$(PREFIX)/bin/$<
-	rm -f $(DESTDIR)/$(PREFIX)/sbin/kerbbl
+uninstall: $(PROG) $(HELPERSH)
+	rm -f $(DESTDIR)/$(PREFIX)/bin/{$(subst $(_),$(comma),$^)}
 
 .PHONY: clean
 clean:
-	rm -vf $(PROG) src/*.o
+	rm -vf $(PROG) $(HELPERSH) src/*.o
 
 .PHONY: distclean
 distclean:
-	rm -vrf $(PROG) src/*.o Makefile autom4te.cache config.log config.status
+	rm -vrf $(PROG) $(SRC:.c=.o) Makefile autom4te.cache config.log config.status
