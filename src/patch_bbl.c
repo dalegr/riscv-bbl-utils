@@ -1,6 +1,6 @@
 /*
- *   Author: Nikita Ermakov <arei@basealt.ru> <coffe92@gmail.com>
- *   Version: v0.1
+ *   Author: Nikita Ermakov <arei@altlinux.org> <coffe92@gmail.com>
+ *   Version: v0.3
  *   Date: 24 Aug 2018
  *   License: GNU GPL v3
  *   Description: this little util allows one to patch a Berkeley Bootloader

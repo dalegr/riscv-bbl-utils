@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-#   Author: Nikita Ermakov <arei@basealt.ru> <coffe92@gmail.com>
-#   Version: v0.2
+#   Author: Nikita Ermakov <arei@altlinux.org> <coffe92@gmail.com>
+#   Version: v0.3
 #   Date: 24 Aug 2018
 #   License: GNU GPL v3
 #   Description: This script is a part of riscv-bbl package.

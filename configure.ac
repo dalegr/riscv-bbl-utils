@@ -3,7 +3,7 @@ dnl Process this file in order to make a configure script
 dnl
 
 dnl Setup autoconf
-AC_INIT([riscv-bbl], [0.2], [arei@altlinux.org])
+AC_INIT([riscv-bbl], [0.3], [arei@altlinux.org])
 dnl AM_INIT_AUTOMAKE
 
 dnl Debug option
