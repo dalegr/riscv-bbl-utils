@@ -19,8 +19,6 @@ dnl Check dependences
 echo "Cheking dependences"
 AC_LANG(C)
 AC_CHECK_TOOL(OBJCOPY, objcopy)
-AC_CHECK_TOOL(GDISK, gdisk)
-AC_CHECK_TOOL(SGDISK, sgdisk)
 
 dnl Disable all CFLAGS if it was not declarated
 if [test -z $CFLAGS; ] then
@@ -34,14 +32,6 @@ AC_PROG_CC
 
 if [ test "x$OBJCOPY" == "x"; ] then
   AC_MSG_ERROR([objcopy from GNU binutils required])
-fi
-
-if [ test "x$GDISK" == "x"; ] then
-  AC_MSG_ERROR([gdisk from gdisk package required])
-fi
-
-if [ test "x$SGDISK" == "x"; ] then
-  AC_MSG_ERROR([sgdisk from gdisk package required])
 fi
 
 dnl Get source code path
